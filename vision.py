@@ -1,12 +1,16 @@
-def async_detect_document(gcs_source_uri, gcs_destination_uri):
-    import json
-    import re
-    import os
-    from google.cloud import vision
-    from google.cloud import vision_v1
-    from google.cloud import storage
-    from google.protobuf import json_format
+import json
+import re
+import os
+from google.cloud import vision
+from google.cloud import vision_v1
+from google.cloud import storage
+from google.protobuf import json_format
 
+bucket_name = "forresulta06"
+blob_name = "processed.txt"
+
+
+def async_detect_document(gcs_source_uri, gcs_destination_uri):
     gcs_source_uri = 'gs://forimagea06/Registration_form.pdf'
     gcs_destination_uri = 'gs://forresulta06/pdf_resulte'
     mime_type = 'application/pdf'
@@ -58,6 +62,29 @@ def async_detect_document(gcs_source_uri, gcs_destination_uri):
 
     first_page_response = response.responses[0]
     annotation = first_page_response.full_text_annotation
+    x = annotation.text
+    first = x.split("\n", 15)
+    second = x.split("\n")
+    del first[15]
+    del first[13]
+    del second[:15]
+    jsonList = []
+    for i in range(0,14):
+        jsonList.append({first[i] : second[i]})
+    print(json.dumps(jsonList, indent = 1))
 
-    print(u'Full text:')
-    print(annotation.text)
+    words = str(jsonList).replace("{", "")
+    wordss = str(words).replace("}", "")
+    wordsss = str(wordss).replace("[", "{")
+    wordssss = str(wordsss).replace("]", "}")
+    print(wordssss)
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+
+    with blob.open("w") as f:
+        f.write(wordssss)
+
+    with blob.open("r") as f:
+        print(f.read())
