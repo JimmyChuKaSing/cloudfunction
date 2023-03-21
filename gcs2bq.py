@@ -24,7 +24,7 @@ def gcs2bq(event, context):
         ],
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
     )
-    uri = "gs://forresulta06/processed.txt"
+    uri = "gs://processedjson/processed.txt"
 
     load_job = client.load_table_from_uri(
         uri,
