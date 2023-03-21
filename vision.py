@@ -6,7 +6,7 @@ from google.cloud import vision_v1
 from google.cloud import storage
 from google.protobuf import json_format
 
-bucket_name = "forresulta06"
+bucket_names = "processedjson"
 blob_name = "processed.txt"
 
 
@@ -80,7 +80,7 @@ def async_detect_document(gcs_source_uri, gcs_destination_uri):
     print(wordssss)
 
     storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
+    bucket = storage_client.bucket(bucket_names)
     blob = bucket.blob(blob_name)
 
     with blob.open("w") as f:
